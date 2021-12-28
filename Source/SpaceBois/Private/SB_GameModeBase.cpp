@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "SB_GameMode.h"
+#include "SB_GameModeBase.h"
 #include "SB_GameSession.h"
 #include "SB_PlayerController.h"
 #include "SB_SpectatorPawn.h"
@@ -12,7 +12,7 @@
 #include "GameFramework/PlayerState.h"
 #include "GameFramework/DefaultPawn.h"
 
-ASB_GameMode::ASB_GameMode(const FObjectInitializer& ObjectInitializer)
+ASB_GameModeBase::ASB_GameModeBase(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	bStartPlayersAsSpectators = true;
@@ -24,15 +24,15 @@ ASB_GameMode::ASB_GameMode(const FObjectInitializer& ObjectInitializer)
 	GameStateClass = ASB_GameState::StaticClass();
 }
 
-void ASB_GameMode::StartPreRound()
+void ASB_GameModeBase::StartPreRound()
 {
 	GetGameState<ASB_GameState>()->SetRoundState(RoundState::PreRound);
 	UE_LOG(LogTemp, Warning, TEXT("GM:StartPreRound, starting round in %f seconds"), PreRoundTime);
-	GetWorld()->GetTimerManager().SetTimer(RoundTimer, this, &ASB_GameMode::StartRound, PreRoundTime, false);
+	GetWorld()->GetTimerManager().SetTimer(RoundTimer, this, &ASB_GameModeBase::StartRound, PreRoundTime, false);
 	K2_StartPreRound();
 }
 
-void ASB_GameMode::StartRound()
+void ASB_GameModeBase::StartRound()
 {
 	GetGameState<ASB_GameState>()->SetRoundState(RoundState::InProgress);
 	UE_LOG(LogTemp, Warning, TEXT("GM:StartRound, round started"));
@@ -46,14 +46,14 @@ void ASB_GameMode::StartRound()
 	}
 }
 
-void ASB_GameMode::Endround()
+void ASB_GameModeBase::Endround()
 {
 	GetGameState<ASB_GameState>()->SetRoundState(RoundState::PostRound);
-	GetWorld()->GetTimerManager().SetTimer(RoundTimer, this, &ASB_GameMode::Reset, PostRoundTime, false);
+	GetWorld()->GetTimerManager().SetTimer(RoundTimer, this, &ASB_GameModeBase::Reset, PostRoundTime, false);
 	K2_EndRound();
 }
 
-void ASB_GameMode::InitGameState()
+void ASB_GameModeBase::InitGameState()
 {
 	Super::InitGameState();
 
@@ -65,7 +65,7 @@ void ASB_GameMode::InitGameState()
 	StartPreRound();
 }
 
-bool ASB_GameMode::AllowPausing(APlayerController* PC)
+bool ASB_GameModeBase::AllowPausing(APlayerController* PC)
 {
 	// Dont allow pausing on dedicated.. maybe this is a mistake?
 	// We can tie this in with the TODO below
@@ -77,12 +77,5 @@ bool ASB_GameMode::AllowPausing(APlayerController* PC)
 
 	// TODO maybe add a list, or checkbox, to allow multiple players to pause
 	return PC == GetWorld()->GetFirstPlayerController();
-}
-
-
-UClass* ASB_GameMode::GetDefaultPawnClassForController_Implementation(AController* InController)
-{
-	// @TODO this could be used to spawn a different pawn for jobs such as AI or cyborgs which are not bipedal/human
-	return ASB_Character::StaticClass();
 }
 

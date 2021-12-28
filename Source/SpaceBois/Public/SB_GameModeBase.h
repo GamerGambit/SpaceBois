@@ -4,17 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "SB_GameMode.generated.h"
+#include "SB_GameModeBase.generated.h"
 
 /**
  * 
  */
-UCLASS()
-class SPACEBOIS_API ASB_GameMode : public AGameModeBase
+UCLASS(Abstract, Blueprintable)
+class SPACEBOIS_API ASB_GameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 
-	ASB_GameMode(const FObjectInitializer& ObjectInitializer);
+	ASB_GameModeBase(const FObjectInitializer& ObjectInitializer);
 
 public:
 	/* ROUND STATE CODE */
@@ -59,5 +59,4 @@ protected:
 public:
 	virtual void InitGameState() override;
 	virtual bool AllowPausing(APlayerController* PC = nullptr) override;
-	virtual UClass* GetDefaultPawnClassForController_Implementation(AController* InController) override;
 };

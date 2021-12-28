@@ -18,11 +18,14 @@ void USB_JobManager::LoadJobFromUClass(UClass* uclass)
     /// @TODO possibly add a whitelist/blacklist for jobs. Maybe the gamemode can specify which jobs to load?
     if (!uclass->HasAnyClassFlags(CLASS_Abstract) && uclass->IsChildOf(USB_Job::StaticClass()))
     {
+        if (uclass->ClassGeneratedBy && (uclass->GetName().StartsWith(TEXT("SKEL_")) || uclass->GetName().StartsWith("REINST_")))
+            return;
+
         USB_Job* job = NewObject<USB_Job>(this, uclass);
         Jobs.Add(job);
         FString title = job->Title;
 
-        UE_LOG(LogTemp, Warning, TEXT("Loaded Job: %s"), *title);
+        UE_LOG(LogTemp, Warning, TEXT("\tLoaded Job: %s"), *title);
     }
 }
 

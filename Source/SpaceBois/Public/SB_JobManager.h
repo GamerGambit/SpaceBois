@@ -19,9 +19,10 @@ class SPACEBOIS_API USB_JobManager : public UObject
 public:
 	USB_JobManager(const FObjectInitializer& ObjectInitializer);
 
-private:
+	UPROPERTY(BlueprintReadOnly, meta = ( GetByRef ) )
 	TArray<USB_Job*> Jobs;
 
+private:
 	void LoadJobFromUClass(UClass* uclass);
 
 public:

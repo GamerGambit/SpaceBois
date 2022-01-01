@@ -42,7 +42,10 @@ void ASB_GameModeBase::StartRound()
 	for (auto ps : GetGameState<ASB_GameState>()->PlayerArray)
 	{
 		auto pc = Cast<APlayerController>(ps->GetOwner());
-		RestartPlayer(pc);
+		if (PlayerCanRestart(pc))
+		{
+			RestartPlayer(pc);
+		}
 	}
 }
 

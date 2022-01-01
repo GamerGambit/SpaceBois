@@ -59,4 +59,7 @@ protected:
 public:
 	virtual void InitGameState() override;
 	virtual bool AllowPausing(APlayerController* PC = nullptr) override;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	FORCEINLINE USB_JobManager* GetJobManager() { return JobManager; }
 };
